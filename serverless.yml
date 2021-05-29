@@ -1,0 +1,50 @@
+service:
+  name: auction-service
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource:
+        - arn:aws:dynamodb:eu-west-1:612082999652:table/AuctionTable #arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/AuctionTable 
+          # arn:aws:dynamodb:eu-west-1:612082999652:table/AuctionTable
+
+
+  # Serverless.yml file allows us to define all the resources that our application needs, in the resources object
+resources:
+  # Since our cloud provider is AWS so we'll use cloudFormation syntax. This syntax is use to define resources
+  Resources:
+    AuctionTable: # This is called a logical ID for a resource
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AuctionTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:  #This is an array of Objects representing the attributes that must be in each item of our table
+          - AttributeName: id    # 1st Property (Each auction must have an ID)
+            AttributeType: S     # 2nd Property
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+  
+functions:
+  createAuction:
+    handler: src/handlers/createAuction.handler
+    events:
+      - http:
+          method: POST
+          path: /auction
+
+custom:
+  bundle:
+    linting: false 
