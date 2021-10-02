@@ -9,6 +9,7 @@ import { setAuctionPictureUrl } from '../../lib/setAuctionPictureUrl'
 async function uploadAuctionPicture(event) {
     
     const { id } = event.pathParameters;
+    console.log("ID ====>",id);
     const { email } = event.requestContext.authorizer;
     const auction = await getAuctionById_Helper(id);
 

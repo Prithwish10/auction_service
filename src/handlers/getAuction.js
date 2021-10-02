@@ -41,12 +41,16 @@ async function getAuction(event, context) {
 
     return {
         statusCode: 200,
+        // headers: {
+        //     "Access-Control-Allow-Headers": "*",
+        //     "Access-Control-Allow-Origin": "*",
+        //     "Access-Control-Allow-Methods": "*",
+        //     "Accept": "*/*",
+        //     "Content-Type": 'application/json'
+        // },
         body: JSON.stringify({ auctions }),
     };
 }
 
 export const handler = commonMiddleware(getAuction);
     // .use(validator({ inputSchema: getAuctionSchema, useDefaults: true }));
-    // .use(httpJsonBodyParser())
-    // .use(httpEventNormalizer())
-    // .use(httpErrorHandler());
